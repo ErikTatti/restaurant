@@ -103,6 +103,18 @@
         </table>
     </div>
 
+    <h2 sec:authorize="hasAuthority('ADMIN')">User List</h2>
+    <table sec:authorize="hasAuthority('ADMIN')">
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+        </tr>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}">Username</td>
+            <td th:text="${user.role}">Role</td>
+        </tr>
+    </table>
+
 </body>
 
 </html>

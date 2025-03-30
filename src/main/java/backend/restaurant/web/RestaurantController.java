@@ -86,4 +86,5 @@ public class RestaurantController {
         repository.deleteById(restaurantId);
         return "redirect:/restaurantlist";
     }
+    
 }
