@@ -1,5 +1,11 @@
 package backend.restaurant.domain;
 
-public class FoodCategoryRepository {
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
+
+
+public interface FoodCategoryRepository extends CrudRepository<FoodCategory, Long> {
+
+    List<FoodCategory> findByName(String name);
+    }
     
-}

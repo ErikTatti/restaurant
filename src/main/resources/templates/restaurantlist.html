@@ -1,8 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras/springsecurity6">
 
+<body>
+    <div sec:authorize="isAuthenticated()">
+        <span sec:authentication="name">Name</span>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out" class="btn btn-sm btn-danger" />
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
+    </div>
 
-<head>
-    <title>Restaurant List</title>
-    
+    <div sec:authorize="!isAuthenticated()">
+        <h2>Login</h2>
+        <form th:action="@{/login}" method="post">
+            <label>Username: <input type="text" name="username" required /></label>
+            <label>Password: <input type="password" name="password" required /></label>
+            <input type="submit" value="Login" />
+        </form>
+    </div>
+
+    <h1 sec:authorize="isAuthenticated()">Restaurant List</h1>
+
+    <a href="/add" sec:authorize="isAuthenticated() && hasAuthority('ADMIN')">Add Restaurant</a>
+
+    <table sec:authorize="isAuthenticated()">
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Price Range</th>
+            <th>Rating</th>
+            <th>Category</th>
+            <th sec:authorize="hasAuthority('ADMIN')">Actions</th>
+        </tr>
+        <tr th:each="restaurant : ${restaurants}">
+            <td th:text="${restaurant.name}">Name</td>
+            <td th:text="${restaurant.address}">Address</td>
+            <td th:text="${restaurant.priceRange}">Price Range</td>
+            <td th:text="${restaurant.rating}">Rating</td>
+            <td th:text="${restaurant.category != null ? restaurant.category.name : 'No Category'}"></td>
+
+            <td sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/edit/{id}(id=${restaurant.id})}">Edit</a> |
+                <a th:href="@{/delete/{id}(id=${restaurant.id})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+</body>
+
 </html>
