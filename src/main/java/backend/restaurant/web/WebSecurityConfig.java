@@ -28,6 +28,8 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/restaurants/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/restaurantlist").authenticated()
                         .anyRequest().authenticated())
@@ -39,6 +41,10 @@ public class WebSecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                         .permitAll());
+
+        
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")));
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
