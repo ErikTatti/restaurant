@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${restaurant.name}">Restaurant Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 th:text="${restaurant.name}"></h1>
+
+    <img th:src="${restaurant.imageUrl}" alt="Restaurant Image" />
+
+    <div class="info">
+        <p><strong>Address:</strong> <span th:text="${restaurant.address}"></span></p>
+        <p><strong>Price Range:</strong> <span th:text="${restaurant.priceRange}"></span></p>
+        <p><strong>Rating:</strong> <span th:text="${restaurant.rating}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${restaurant.category?.name ?: 'No Category'}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${restaurant.text}"></span></p>
+
+    </div>
+
+    <a href="/restaurantlist">Back to List</a>
+
+</body>
+
+</html>

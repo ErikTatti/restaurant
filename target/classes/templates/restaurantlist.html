@@ -99,7 +99,7 @@
                 <th sec:authorize="hasAuthority('ADMIN')"></th>
             </tr>
             <tr th:each="r : ${restaurants}">
-                <td th:text="${r.name}"></td>
+                <td><a th:href="@{/restaurant/{id}(id=${r.id})}" th:text="${r.name}"></a></td>
                 <td th:text="${r.address}"></td>
                 <td th:text="${r.priceRange}"></td>
                 <td th:text="${r.rating}"></td>

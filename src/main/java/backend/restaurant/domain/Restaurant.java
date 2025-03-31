@@ -20,16 +20,19 @@ public class Restaurant {
     @JoinColumn(name = "category_id")
     private FoodCategory category;
 
+    private String imageUrl;
+
     public Restaurant() {
     }
 
-    public Restaurant(String name, String address, String priceRange, Integer rating, String text, FoodCategory category) {
+    public Restaurant(String name, String address, String priceRange, Integer rating, String text, FoodCategory category, String imageUrl) {
         this.name = name;
         this.address = address;
         this.priceRange = priceRange;
         this.rating = rating;
         this.text = text;
         this.category = category;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -86,6 +89,14 @@ public class Restaurant {
 
     public void setCategory(FoodCategory category) {
         this.category = category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

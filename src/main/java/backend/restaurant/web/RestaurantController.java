@@ -61,13 +61,17 @@ public class RestaurantController {
     public String save(@Valid @ModelAttribute("restaurant") Restaurant restaurant, BindingResult bindingResult,
             Model model) {
         log.info("CONTROLLER: Save the restaurant - check validation of restaurant: " + restaurant);
+
         if (bindingResult.hasErrors()) {
-            log.info("Some validation error happened, restaurant: " + restaurant);
+            log.info("Validation error occurred, restaurant: " + restaurant);
             model.addAttribute("restaurant", restaurant);
             model.addAttribute("categories", cRepository.findAll());
             return "addrestaurant";
         }
+
         repository.save(restaurant);
+        log.info("Restaurant saved successfully: " + restaurant);
+
         return "redirect:/restaurantlist";
     }
 
@@ -91,6 +95,15 @@ public class RestaurantController {
     public String deleteRestaurant(@PathVariable("id") Long restaurantId, Model model) {
         repository.deleteById(restaurantId);
         return "redirect:/restaurantlist";
+    }
+
+    @RequestMapping("/restaurant/{id}")
+    public String viewRestaurant(@PathVariable("id") Long id, Model model) {
+        Restaurant restaurant = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID: " + id));
+
+        model.addAttribute("restaurant", restaurant);
+        return "restaurant";
     }
 
 }
