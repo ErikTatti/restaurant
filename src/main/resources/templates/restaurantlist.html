@@ -80,6 +80,15 @@
         <h2>Restaurants</h2>
         <a href="/add" sec:authorize="hasAuthority('ADMIN')" class="btn">+ Add</a>
 
+        <form method="get" action="/restaurantlist">
+            <label for="sortBy">Sort by:</label>
+            <select name="sortBy" id="sortBy">
+                <option value="name">Name</option>
+                <option value="price">Price</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+
         <table>
             <tr>
                 <th>Name</th>

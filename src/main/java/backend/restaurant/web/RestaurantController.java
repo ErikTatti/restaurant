@@ -1,5 +1,6 @@
 package backend.restaurant.web;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Controller
 public class RestaurantController {
 
@@ -26,22 +26,27 @@ public class RestaurantController {
     private final FoodCategoryRepository cRepository;
     private final AppUserRepository userRepository;
 
-    public RestaurantController(RestaurantRepository repository, FoodCategoryRepository cRepository, AppUserRepository userRepository) {
+    public RestaurantController(RestaurantRepository repository, FoodCategoryRepository cRepository,
+            AppUserRepository userRepository) {
         this.repository = repository;
         this.cRepository = cRepository;
         this.userRepository = userRepository;
 
     }
 
-    @RequestMapping(value="/login")
+    @RequestMapping(value = "/login")
     public String login() {
         return "restaurantlist";
     }
 
     @GetMapping(value = { "/", "/restaurantlist" })
-    public String restaurantList(Model model) {
-        model.addAttribute("restaurants", repository.findAll());
+    public String restaurantList(@RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortBy,
+            Model model) {
+        Sort sort = Sort.by(sortBy.equals("price") ? Sort.Order.asc("priceRange") : Sort.Order.asc("name"));
+
+        model.addAttribute("restaurants", repository.findAll(sort));
         model.addAttribute("users", userRepository.findAll());
+
         return "restaurantlist";
     }
 
@@ -53,7 +58,8 @@ public class RestaurantController {
     }
 
     @PostMapping("/save")
-    public String save(@Valid @ModelAttribute("restaurant") Restaurant restaurant, BindingResult bindingResult, Model model) {
+    public String save(@Valid @ModelAttribute("restaurant") Restaurant restaurant, BindingResult bindingResult,
+            Model model) {
         log.info("CONTROLLER: Save the restaurant - check validation of restaurant: " + restaurant);
         if (bindingResult.hasErrors()) {
             log.info("Some validation error happened, restaurant: " + restaurant);
@@ -70,7 +76,7 @@ public class RestaurantController {
         Restaurant restaurant = repository.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID: " + restaurantId));
         model.addAttribute("restaurant", restaurant);
-        model.addAttribute("categories", cRepository.findAll()); 
+        model.addAttribute("categories", cRepository.findAll());
         return "editrestaurant";
     }
 
@@ -81,10 +87,10 @@ public class RestaurantController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping(value = "/delete/{id}", method=RequestMethod.GET)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String deleteRestaurant(@PathVariable("id") Long restaurantId, Model model) {
         repository.deleteById(restaurantId);
         return "redirect:/restaurantlist";
     }
-    
+
 }
